@@ -1,4 +1,3 @@
-import re
 from enum import Enum
 
 from telethon.tl.custom import Message

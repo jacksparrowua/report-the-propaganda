@@ -1,3 +1,14 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pt
+*.pth
+*.sh
+**/.DS_Store
+
+.vscode/
 .idea/
-__pycache__
+.ipynb_checkpoints/
+.pytest_cache/
 session_name.session
