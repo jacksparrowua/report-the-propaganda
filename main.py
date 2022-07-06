@@ -1,3 +1,5 @@
+import random
+
 from report_message import ReportMessage, ButtonAction
 
 try:
@@ -23,8 +25,10 @@ async def main():
     await client.start()
 
     while True:
-        print('Waiting 30 seconds...')
-        time.sleep(30)  # wait some time to prevent spam protection
+        # wait some time to prevent spam protection
+        delay = random.randint(20, 45) + random.uniform(0.0, 2.0)
+        print(f"Waiting {delay} seconds...")
+        time.sleep(delay)
 
         await client.send_message(channel_name, start_new_report_message)  # start new report task
         last_channel_message = await client.get_messages(channel_name, limit=1)
