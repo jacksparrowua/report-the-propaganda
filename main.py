@@ -1,6 +1,6 @@
+import asyncio
 import random
-
-from report_message import ButtonAction, ReportMessage
+import time
 
 try:
     import colorama
@@ -9,13 +9,12 @@ try:
 except ImportError:
     raise
 
-import asyncio
-import time
 
 from colorama import Fore
 from telethon import TelegramClient, functions, types
 
 from config import api_hash, api_id
+from report_message import ButtonAction, ReportMessage
 
 channel_name = "stopdrugsbot"
 start_new_report_message = "🚩Надіслати скаргу на ресурс"
@@ -28,11 +27,12 @@ async def main():
 
     while True:
         # wait some time to prevent spam protection
-        delay = random.randint(20, 45) + random.uniform(0.0, 2.0)
+        delay = random.randint(20, 35) + random.uniform(0.0, 2.0)
         print(f"Waiting {delay} seconds...")
         time.sleep(delay)
 
         await client.send_message(channel_name, start_new_report_message)  # start new report task
+        time.sleep(random.randint(2, 4) + random.uniform(0.0, 1.0))  # wait for bot response
         last_channel_message = await client.get_messages(channel_name, limit=1)
         report = ReportMessage(message=last_channel_message[0])
 
@@ -91,7 +91,6 @@ async def main():
             await report.click_button(ButtonAction.SKIP_TASK)
 
 
-asyncio.run(main())
-
 if __name__ == "__main__":
-    main()
+    # main()
+    asyncio.run(main())
