@@ -37,3 +37,22 @@ Or you can uninstall it completely with - `pre-commit uninstall`.
 
 To update package versions inside `.pre-commit-config.yaml` - `pre-commit autoupdate`.
 
+After installing pre-precommit hooks your code will be always looks nice.
+
+
+### Docker
+
+To build a docker image:
+
+```bash
+docker build -t report-the-propaganda .
+```
+
+To run it:
+
+```bash
+docker run -it --rm \
+    -e API_ID=*** \
+    -e API_HASH=**** \
+report-the-propaganda
+```
