@@ -1,4 +1,5 @@
 import asyncio
+import os
 import random
 import time
 
@@ -13,16 +14,23 @@ except ImportError:
 from colorama import Fore
 from telethon import TelegramClient, functions, types
 
-from config import api_hash, api_id
 from report_message import ButtonAction, ReportMessage
 
 channel_name = "stopdrugsbot"
 start_new_report_message = "🚩Надіслати скаргу на ресурс"
 
 
-async def main():
+API_ID = os.environ["API_ID"]
+API_HASH = os.environ["API_HASH"]
+
+
+async def main() -> None:
+    """Report entrypoint.
+    To run this script you need to setup `API_ID` and `API_HASH` env variables.
+    To get more info how to create then use official Telegram docs - https://my.telegram.org/apps
+    """
     count = 0
-    client = TelegramClient("session_name", api_id, api_hash)
+    client = TelegramClient("session_name", API_ID, API_HASH)
     await client.start()
 
     while True:
@@ -92,5 +100,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    # main()
     asyncio.run(main())
