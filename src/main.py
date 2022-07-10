@@ -9,7 +9,6 @@ import colors as clr
 from misc import get_logger
 from report_message import ButtonAction, ReportMessage
 
-
 LOGGER = get_logger("report the propaganda")
 CHANNEL_NAME = "stopdrugsbot"
 START_NEW_REPORT_MESSAGE = "🚩Надіслати скаргу на ресурс"
