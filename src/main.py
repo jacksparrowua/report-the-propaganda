@@ -3,6 +3,7 @@ import os
 import random
 import time
 
+import telethon.errors as err
 from telethon import TelegramClient, functions, types
 
 import colors as clr
@@ -134,7 +135,14 @@ async def main() -> None:
         except KeyboardInterrupt:
             LOGGER.info("Interrupting report session.")
             LOGGER.info(stats())
+        except err.FloodWaitError as flood_error:
+            # wait for the unban
+            LOGGER.info(
+                f"Triggered spam protection, will sleep for {clr.CBLUE}{flood_error.seconds}{clr.CEND} seconds."
+            )
+            time.sleep(flood_error.seconds)
         except Exception as e:
+            print(type(e))
             LOGGER.warning("Got an exception: " + str(e))
             LOGGER.info(stats())
 
