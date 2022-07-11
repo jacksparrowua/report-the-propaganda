@@ -91,6 +91,12 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
             else:
                 LOGGER.warning(f"{clr.CRED}{'Something went wrong. Skipping the task'}{clr.CEND}")
                 await report.click_button(ButtonAction.SKIP_TASK)
+        except err.FloodWaitError as flood_error:
+            # wait for the unban
+            LOGGER.info(
+                f"Triggered spam protection, will sleep for {clr.CBLUE}{flood_error.seconds}{clr.CEND} seconds."
+            )
+            time.sleep(flood_error.seconds)
         except Exception as e:
             LOGGER.warning(f"{clr.CRED}{str(e)}{clr.CEND}")
             # if "A wait of" in str(e):
@@ -135,12 +141,6 @@ async def main() -> None:
         except KeyboardInterrupt:
             LOGGER.info("Interrupting report session.")
             LOGGER.info(stats())
-        except err.FloodWaitError as flood_error:
-            # wait for the unban
-            LOGGER.info(
-                f"Triggered spam protection, will sleep for {clr.CBLUE}{flood_error.seconds}{clr.CEND} seconds."
-            )
-            time.sleep(flood_error.seconds)
         except Exception as e:
             print(type(e))
             LOGGER.warning("Got an exception: " + str(e))
