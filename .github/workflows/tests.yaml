@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -26,9 +26,9 @@ jobs:
 
       - name: Codestyle
         run: |
-          isort --line-length=120 --profile=black --check-only batteries && \
-          black --line-length=120 --check batteries && \
-          flake8 --count --max-line-length=120 --ignore=Q000,D100,D205,D212,D415,W605 batteries
+          isort --line-length=120 --profile=black --check-only src && \
+          black --line-length=120 --check src && \
+          flake8 --count --max-line-length=120 --ignore=Q000,D100,D205,D212,D415,W605 src
       - name: Run tests
         run: |
           PYTHONPATH=. pytest -ra -q -v .
