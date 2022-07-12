@@ -29,6 +29,7 @@ jobs:
           isort --line-length=120 --profile=black --check-only src && \
           black --line-length=120 --check src && \
           flake8 --count --max-line-length=120 --ignore=Q000,D100,D205,D212,D415,W605 src
+
       - name: Run tests
         run: |
-          PYTHONPATH=. pytest -ra -q -v .
+          PYTHONPATH=src pytest -ra -q -v
