@@ -1,7 +1,6 @@
 import asyncio
 import os
 import random
-import struct
 import time
 import traceback
 
@@ -99,13 +98,9 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
                 f"Triggered spam protection, will sleep for {clr.CBLUE}{flood_error.seconds}{clr.CEND} seconds."
             )
             time.sleep(flood_error.seconds)
-        except (IndexError, struct.error):
+        except Exception:
+            # skip when something went wrong
             LOGGER.warning(traceback.format_exc())
-        except Exception as e:
-            LOGGER.warning(f"{clr.CRED}{str(e)}{clr.CEND}")
-            LOGGER.warning(traceback.format_exc())
-            # if "A wait of" in str(e):
-            #     exit()  # spam protection, just wait the time from the message
             await report.click_button(ButtonAction.SKIP_TASK)
             raise
     else:
