@@ -102,6 +102,7 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
             LOGGER.warning(traceback.format_exc())
         except Exception as e:
             LOGGER.warning(f"{clr.CRED}{str(e)}{clr.CEND}")
+            LOGGER.warning(traceback.format_exc())
             # if "A wait of" in str(e):
             #     exit()  # spam protection, just wait the time from the message
             await report.click_button(ButtonAction.SKIP_TASK)
