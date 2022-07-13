@@ -33,6 +33,10 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
             channel = report.get_channel_name()
             reason = report.get_report_reason()
 
+            # no channel or not reason -> no report
+            if not channel or not reason:
+                return is_successfull
+
             # retrieve channel ID
             if report.is_joinchat():
                 request = functions.messages.CheckChatInviteRequest(hash=report.get_channel_name())
@@ -71,10 +75,7 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
 
             # reporting
             request = functions.messages.ReportRequest(
-                peer="username",
-                id=[channel_to_be_reported_id],
-                reason=types.InputReportReasonOther(),
-                message=report.get_report_reason(),
+                peer="username", id=[channel_to_be_reported_id], reason=types.InputReportReasonOther(), message=reason
             )
             response = await client(request)
 
@@ -147,8 +148,8 @@ async def main() -> None:
             LOGGER.info("Interrupting report session.")
             LOGGER.info(stats())
         except Exception as e:
-            print(type(e))
             LOGGER.warning("Got an exception: " + str(e))
+            LOGGER.warning(traceback.format_exc())
             LOGGER.info(stats())
 
 

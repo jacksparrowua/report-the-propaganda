@@ -23,6 +23,16 @@ def test_decompose_task():
     assert c == "Канал розповсюджує фейкові новини та вводить в оман людей!"
     assert l == "https://t.me/joinchat/Jnng5QoCTLM4MTcy"
 
+    t, c, l = decompose_task(
+        """Завдання: Виділити пост та додайте скаргу за "Особиста інформація" і додайте текст скарги 👇
+
+🔗Посилання: https://t.me/joinchat/Jnng5QoCTLM4MTcy"""
+    )
+
+    assert t is None
+    assert c is None
+    assert l is None
+
 
 def test_report_message_is_telegram():
     mess = MessageMock(
@@ -40,3 +50,15 @@ def test_report_message_is_telegram():
     assert rm.is_joinchat() == True
     assert rm.get_report_reason() == "Канал розповсюджує фейкові новини та вводить в оман людей!"
     assert rm.get_channel_name() == "Jnng5QoCTLM4MTcy"
+
+    mess = MessageMock(
+        """Завдання: Виділити пост та додайте скаргу за "Особиста інформація" і додайте текст скарги 👇
+
+🔗Посилання: https://t.me/joinchat/Jnng5QoCTLM4MTcy"""
+    )
+
+    rm = ReportMessage(mess)
+    assert rm.is_telegram() == False
+    assert rm.is_joinchat() == False
+    assert rm.get_report_reason() == ""
+    assert rm.get_channel_name() == ""

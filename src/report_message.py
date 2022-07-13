@@ -42,7 +42,10 @@ class ReportMessage:
     def __init__(self, message: Message) -> None:
         # NOTE: message body is in `message.message`
         self.__message = message
-        self.task, self.complaint, self.link = decompose_task(message.message)
+        task, complaint, link = decompose_task(message.message)
+        self.task = "" if task is None else task
+        self.complaint = "" if complaint is None else complaint
+        self.link = "" if link is None else link
 
     def is_telegram(self) -> bool:
         return "t.me/" in self.link
@@ -54,6 +57,9 @@ class ReportMessage:
         return self.complaint
 
     def get_channel_name(self) -> str:
+        if not self.link:
+            return ""
+
         if self.is_joinchat():
             return self.link.split("joinchat/")[-1]
 
