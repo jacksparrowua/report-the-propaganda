@@ -1,7 +1,9 @@
 import asyncio
 import os
 import random
+import struct
 import time
+import traceback
 
 import telethon.errors as err
 from telethon import TelegramClient, functions, types
@@ -30,6 +32,10 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
         try:
             channel = report.get_channel_name()
             reason = report.get_report_reason()
+
+            # no channel or not reason -> no report
+            if not channel or not reason:
+                return is_successfull
 
             # retrieve channel ID
             if report.is_joinchat():
@@ -69,10 +75,7 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
 
             # reporting
             request = functions.messages.ReportRequest(
-                peer="username",
-                id=[channel_to_be_reported_id],
-                reason=types.InputReportReasonOther(),
-                message=report.get_report_reason(),
+                peer="username", id=[channel_to_be_reported_id], reason=types.InputReportReasonOther(), message=reason
             )
             response = await client(request)
 
@@ -97,10 +100,13 @@ async def process_report(client: TelegramClient, report: ReportMessage, count: i
                 f"Triggered spam protection, will sleep for {clr.CBLUE}{flood_error.seconds}{clr.CEND} seconds."
             )
             time.sleep(flood_error.seconds)
-        except Exception as e:
-            LOGGER.warning(f"{clr.CRED}{str(e)}{clr.CEND}")
-            # if "A wait of" in str(e):
-            #     exit()  # spam protection, just wait the time from the message
+        except (IndexError, struct.error):
+            # skip when something went wrong
+            LOGGER.warning(traceback.format_exc())
+            await report.click_button(ButtonAction.SKIP_TASK)
+        except Exception:
+            # exit when happened something unique
+            LOGGER.warning(traceback.format_exc())
             await report.click_button(ButtonAction.SKIP_TASK)
             raise
     else:
@@ -142,8 +148,8 @@ async def main() -> None:
             LOGGER.info("Interrupting report session.")
             LOGGER.info(stats())
         except Exception as e:
-            print(type(e))
             LOGGER.warning("Got an exception: " + str(e))
+            LOGGER.warning(traceback.format_exc())
             LOGGER.info(stats())
 
 
